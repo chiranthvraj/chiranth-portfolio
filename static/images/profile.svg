@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 560" role="img" aria-labelledby="title">
+  <title id="title">Illustrated profile avatar placeholder</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dcebe2"/>
+      <stop offset="1" stop-color="#b9d7c6"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#397e66"/>
+      <stop offset="1" stop-color="#245b4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="500" height="560" fill="url(#bg)"/>
+  <circle cx="404" cy="100" r="45" fill="#fff" opacity=".28"/>
+  <circle cx="95" cy="200" r="25" fill="#fff" opacity=".24"/>
+  <path d="M96 560c13-116 73-178 154-178s141 62 154 178" fill="url(#shirt)"/>
+  <path d="M203 357h94v82c-13 19-31 29-47 29s-34-10-47-29z" fill="#b97958"/>
+  <ellipse cx="250" cy="247" rx="103" ry="125" fill="#d49a75"/>
+  <path d="M146 249c-20-112 26-179 109-179 87 0 125 60 102 179l-21-55c-50 7-100-11-134-44-8 38-26 72-56 99z" fill="#273b35"/>
+  <path d="M165 256c-21-13-34 0-28 26 5 20 16 33 30 33m168-59c21-13 34 0 28 26-5 20-16 33-30 33" fill="#d49a75"/>
+  <path d="M214 260h1m69 0h1" stroke="#273b35" stroke-linecap="round" stroke-width="9"/>
+  <path d="M232 315c11 9 25 9 36 0" fill="none" stroke="#9b5e48" stroke-linecap="round" stroke-width="5"/>
+  <path d="M225 376l25 26 25-26" fill="#f4f6f2"/>
+</svg>

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}About | {{ profile.name }}{% endblock %}
+{% block content %}
+<section class="page-intro container">
+  <p class="eyebrow">A BIT ABOUT ME</p>
+  <h1>Curious by nature.<br><span class="accent-text">Builder by choice.</span></h1>
+  <p class="section-lead">{{ profile.about }}</p>
+</section>
+
+<section class="section section-tint">
+  <div class="container about-grid">
+    <article class="about-card">
+      <span class="about-number">01</span><h2>Education</h2>
+      <p>{{ profile.education }}</p>
+    </article>
+    <article class="about-card">
+      <span class="about-number">02</span><h2>Career interests</h2>
+      <p>{{ profile.interests }}</p>
+    </article>
+    <article class="about-card">
+      <span class="about-number">03</span><h2>What I value</h2>
+      <p>Clear communication, steady learning, and thoughtful solutions that make someone's day a little easier.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-heading"><div><p class="eyebrow">TOOLS IN MY TOOLKIT</p><h2>Skills I'm <span class="accent-text">growing.</span></h2></div></div>
+  <div class="skills-grid">
+    <article class="skill-card"><span class="skill-icon">⌘</span><h3>Programming</h3><div class="tag-list"><a href="{{ url_for('projects', technology='Python') }}">Python</a><a href="{{ url_for('projects', technology='JavaScript') }}">JavaScript</a></div></article>
+    <article class="skill-card"><span class="skill-icon">◫</span><h3>Web technologies</h3><div class="tag-list"><a href="{{ url_for('projects', technology='HTML') }}">HTML</a><a href="{{ url_for('projects', technology='CSS') }}">CSS</a><a href="{{ url_for('projects', technology='Flask') }}">Flask</a></div></article>
+    <article class="skill-card"><span class="skill-icon">▤</span><h3>Database &amp; tools</h3><div class="tag-list"><a href="{{ url_for('projects', technology='SQLite') }}">SQLite</a><a href="{{ url_for('projects', technology='SQLAlchemy') }}">SQLAlchemy</a><span>Git</span></div></article>
+  </div>
+</section>
+{% endblock %}

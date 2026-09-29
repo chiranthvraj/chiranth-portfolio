@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | {{ profile.name }}{% endblock %}
+{% block content %}
+<section class="project-detail container">
+  <a class="back-link" href="{{ url_for('projects') }}">← Back to all projects</a>
+  <p class="eyebrow">PROJECT DETAILS</p>
+  <h1>{{ project.title }}</h1>
+  <p class="project-detail-lead">{{ project.description }}</p>
+  <div class="project-detail-image">
+    <img src="{{ url_for('static', filename='images/' ~ project.image) }}" alt="{{ project.title }} project illustration">
+  </div>
+  <div class="project-detail-info">
+    <section>
+      <h2>About this project</h2>
+      <p>{{ project.description }}</p>
+      <p>This portfolio entry is stored in the SQLite database and shown here from its project record. Update the description and repository link when you add the real project.</p>
+    </section>
+    <aside class="project-detail-sidebar">
+      <h2>Built with</h2>
+      <div class="tag-list">{% for technology in project.technologies.split(',') %}<a href="{{ url_for('projects', technology=technology.strip()) }}">{{ technology.strip() }}</a>{% endfor %}</div>
+      <a class="button button-primary detail-github" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">Visit GitHub profile <span aria-hidden="true">↗</span></a>
+      <a class="button button-secondary detail-contact" href="{{ url_for('contact') }}">Ask me about it</a>
+    </aside>
+  </div>
+</section>
+{% endblock %}

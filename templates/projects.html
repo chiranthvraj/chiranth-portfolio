@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Projects | {{ profile.name }}{% endblock %}
+{% block content %}
+<section class="page-intro container">
+  <p class="eyebrow">THE PROJECT SHELF</p>
+  <h1>Learning through<br><span class="accent-text">making.</span></h1>
+  <p class="section-lead">A collection of small experiments and useful ideas, built one step at a time.</p>
+</section>
+<section class="section section-tint">
+  <div class="container project-browser">
+    <form class="project-search" method="get" action="{{ url_for('projects') }}" role="search">
+      <label class="sr-only" for="project-query">Search projects</label>
+      <input id="project-query" name="q" type="search" maxlength="100" placeholder="Search projects or technologies..." value="{{ search_text }}">
+      {% if selected_technology %}<input type="hidden" name="technology" value="{{ selected_technology }}">{% endif %}
+      <button class="button button-primary" type="submit">Search</button>
+    </form>
+    <div class="project-filters" aria-label="Filter projects by technology">
+      <a class="filter-chip {% if not selected_technology %}is-active{% endif %}" href="{{ url_for('projects', q=search_text or None) }}">All</a>
+      {% for technology in technologies %}
+        <a class="filter-chip {% if selected_technology|lower == technology|lower %}is-active{% endif %}" href="{{ url_for('projects', q=search_text or None, technology=technology) }}">{{ technology }}</a>
+      {% endfor %}
+    </div>
+    <p class="project-count" aria-live="polite">{{ projects|length }} project{% if projects|length != 1 %}s{% endif %} found</p>
+  </div>
+  <div class="container project-grid project-grid-page">
+    {% for project in projects %}
+      <article class="project-card">
+        <a class="project-image" href="{{ url_for('project_detail', project_id=project.id) }}" aria-label="View {{ project.title }} details">
+          <img src="{{ url_for('static', filename='images/' ~ project.image) }}" alt="{{ project.title }} project illustration">
+          <span class="image-arrow" aria-hidden="true">↗</span>
+        </a>
+        <div class="project-content">
+          <div class="project-title-row"><h2><a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a></h2><a class="icon-link" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" aria-label="Open Chiranth's GitHub profile">↗</a></div>
+          <p>{{ project.description }}</p>
+          <div class="tag-list">{% for technology in project.technologies.split(',') %}<a href="{{ url_for('projects', technology=technology.strip()) }}">{{ technology.strip() }}</a>{% endfor %}</div>
+          <a class="project-action" href="{{ url_for('project_detail', project_id=project.id) }}">View project details <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    {% else %}
+      <div class="empty-state"><h2>No matching projects</h2><p>Try another search or clear the technology filter.</p><a class="button button-secondary" href="{{ url_for('projects') }}">Show all projects</a></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
