@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-card">
+    <div class="auth-icon">✓</div>
+    <p class="eyebrow">WELCOME BACK</p>
+    <h1>Good to see you.</h1>
+    <p class="muted-copy">Log in to pick up where you left off.</p>
+    <form method="post" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input class="form-control" id="email" name="email" type="email" autocomplete="email" required value="{{ request.form.get('email', '') }}">
+      </div>
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primary w-100" type="submit">Log in <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-switch">New to TaskFlow? <a href="{{ url_for('register') }}">Create an account</a></p>
+  </div>
+</section>
+{% endblock %}

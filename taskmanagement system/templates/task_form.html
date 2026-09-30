@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit task' if task else 'New task' }}{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('task_details', task_id=task.id) if task else url_for('dashboard') }}">← {{ 'Back to task' if task else 'Back to dashboard' }}</a>
+  <div class="form-card">
+    <p class="eyebrow">{{ 'KEEP IT UP TO DATE' if task else 'MAKE A PLAN' }}</p>
+    <h1>{{ 'Edit task' if task else 'Create a task' }}</h1>
+    <p class="muted-copy">{{ 'Update the details below.' if task else 'Capture the next thing you want to get done.' }}</p>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title <span class="required-mark">*</span></label>
+        <input class="form-control" id="title" name="title" type="text" maxlength="120" required autofocus value="{{ values.get('title', '') }}">
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description <span class="optional-label">Optional</span></label>
+        <textarea class="form-control" id="description" name="description" rows="4" maxlength="2000" placeholder="Add a few details...">{{ values.get('description', '') }}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="mb-3">
+          <label for="priority" class="form-label">Priority</label>
+          <select class="form-select" id="priority" name="priority">
+            {% for priority in task_priorities %}<option value="{{ priority }}" {{ 'selected' if values.get('priority', 'Medium') == priority else '' }}>{{ priority }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select class="form-select" id="status" name="status">
+            {% for status in task_statuses %}<option value="{{ status }}" {{ 'selected' if values.get('status', 'Pending') == status else '' }}>{{ status }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label for="due_date" class="form-label">Due date <span class="optional-label">Optional</span></label>
+        <input class="form-control" id="due_date" name="due_date" type="date" value="{{ values.get('due_date').isoformat() if values.get('due_date') and values.get('due_date') is not string else values.get('due_date', '') }}">
+      </div>
+      <div class="form-actions">
+        <a class="btn btn-light" href="{{ url_for('task_details', task_id=task.id) if task else url_for('dashboard') }}">Cancel</a>
+        <button class="btn btn-primary" type="submit">{{ 'Save changes' if task else 'Create task' }}</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

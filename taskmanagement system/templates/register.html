@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-card">
+    <div class="auth-icon">✓</div>
+    <p class="eyebrow">GET STARTED</p>
+    <h1>Make space for what matters.</h1>
+    <p class="muted-copy">Create an account to organize your tasks.</p>
+    <form method="post" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input class="form-control" id="username" name="username" type="text" maxlength="40" autocomplete="username" required value="{{ values.username }}">
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input class="form-control" id="email" name="email" type="email" maxlength="120" autocomplete="email" required value="{{ values.email }}">
+      </div>
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input class="form-control" id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+        <div class="form-text">Use at least 8 characters.</div>
+      </div>
+      <button class="btn btn-primary w-100" type="submit">Create account <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}
