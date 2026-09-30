@@ -10,9 +10,23 @@ os.environ["DATABASE_URL"] = (
 
 from app import app as flask_app
 from app import db
+from app import normalize_database_url
 
 
 class TaskFlowTests(unittest.TestCase):
+    def test_database_url_supports_postgres_driver(self):
+        self.assertEqual(
+            normalize_database_url("postgres://user:pass@host/db"),
+            "postgresql+psycopg://user:pass@host/db",
+        )
+        self.assertEqual(
+            normalize_database_url("postgresql://user:pass@host/db"),
+            "postgresql+psycopg://user:pass@host/db",
+        )
+        self.assertEqual(
+            normalize_database_url("sqlite:///tasks.db"), "sqlite:///tasks.db"
+        )
+
     def setUp(self):
         flask_app.config.update(
             TESTING=True,

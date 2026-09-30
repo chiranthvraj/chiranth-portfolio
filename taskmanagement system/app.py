@@ -21,12 +21,26 @@ from flask_wtf.csrf import CSRFError, CSRFProtect, generate_csrf
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
+def normalize_database_url(database_url):
+    if database_url.startswith(("postgres://", "postgresql://")):
+        database_url = database_url.replace(
+            "postgres://", "postgresql+psycopg://", 1
+        ).replace("postgresql://", "postgresql+psycopg://", 1)
+    return database_url
+
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL", "sqlite:///tasks.db"
+database_url = normalize_database_url(
+    os.environ.get("DATABASE_URL", "sqlite:///tasks.db")
 )
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get(
+    "SESSION_COOKIE_SECURE", ""
+).lower() in {"1", "true", "yes"}
 
 os.makedirs(app.instance_path, exist_ok=True)
 db = SQLAlchemy(app)

@@ -63,6 +63,22 @@ python app.py
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000). The SQLite database is created at `instance/tasks.db` on first start. Set `FLASK_DEBUG=1` only for local development. Optionally set `DATABASE_URL` to use another SQLAlchemy-supported database URL.
 
+## Deploy on Render
+
+GitHub stores the source code; it does not run this Flask backend. To publish the working app, create a Render Web Service connected to the `chiranthvraj/chiranth-portfolio` repository and configure:
+
+- **Root Directory:** `taskmanagement system`
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `gunicorn app:app`
+
+Add these environment variables in the Render service settings:
+
+- `SECRET_KEY`: a long, random, private value generated for production. Do not commit it or reuse the example above.
+- `SESSION_COOKIE_SECURE`: `true`
+- `DATABASE_URL`: the connection URL for a PostgreSQL database. Render can supply its internal database URL when you create a database in the same region. The app accepts Render's `postgres://` URL format and uses the included Psycopg driver.
+
+Use PostgreSQL for deployed data. A Render service's local filesystem is not durable across deploys and restarts, so the default SQLite database is intended for local development, not a persistent production deployment. After setting these values, deploy the service from Render; subsequent pushes to `main` can trigger automatic deploys.
+
 ## Using the app
 
 Create an account with a username, valid email, and password of at least eight characters. The dashboard shows your task counts. Use **Add a task** to set a title, optional description and due date, priority, and status. Select a task to view details; edit and delete actions are available from the list and detail page. Search matches task titles, and the status and priority selectors can be combined.
