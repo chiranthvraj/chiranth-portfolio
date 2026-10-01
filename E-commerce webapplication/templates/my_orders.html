@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My orders{% endblock %}
+{% block content %}
+<section class="page-header compact-header">
+  <div class="container">
+    <span class="eyebrow">YOUR LITTLE SHOP ACCOUNT</span>
+    <h1>My orders</h1>
+    <p>See the latest update on each of your orders.</p>
+  </div>
+</section>
+<section class="section-space pt-4">
+  <div class="container my-orders-container">
+    {% if orders %}
+    <div class="my-orders-list">
+      {% for order in orders %}
+      <article class="my-order-card">
+        <div class="my-order-heading">
+          <div><span class="eyebrow">ORDER #{{ order.id }}</span><span class="my-order-date">{{ order.created_at.strftime('%b %d, %Y') }}</span></div>
+          <span class="status-pill status-{{ order.status|lower }}">{{ order.status }}</span>
+        </div>
+        <div class="my-order-items">
+          {% for item in order.items %}
+          <div class="summary-row"><span>{{ item.product_name }} × {{ item.quantity }}</span><span>{{ (item.unit_price * item.quantity)|money }}</span></div>
+          {% endfor %}
+        </div>
+        <div class="my-order-footer">
+          <strong>Total <span>{{ order.total|money }}</span></strong>
+          <a class="text-link" href="{{ url_for('order_confirmation', order_id=order.id) }}">View order details →</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">♡</span>
+      <h2>No orders yet</h2>
+      <p>Your orders and delivery updates will appear here after checkout.</p>
+      <a class="btn btn-dark rounded-pill px-4" href="{{ url_for('products') }}">Browse products</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

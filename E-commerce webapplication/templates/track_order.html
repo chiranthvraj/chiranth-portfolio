@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Track an order{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card">
+    <span class="eyebrow">A LITTLE UPDATE</span>
+    <h1>Track your order.</h1>
+    <p>Enter the order number from your confirmation and the email address used at checkout.</p>
+    <form method="post" action="{{ url_for('track_order') }}">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3">
+        <label for="order_number" class="form-label">Order number</label>
+        <input id="order_number" class="form-control" name="order_number" type="number" min="1" required>
+      </div>
+      <div class="mb-4">
+        <label for="email" class="form-label">Checkout email</label>
+        <input id="email" class="form-control" name="email" type="email" autocomplete="email" required>
+      </div>
+      <button class="btn btn-dark rounded-pill w-100 py-3" type="submit">Check delivery status</button>
+    </form>
+    <p class="auth-switch">Have an account? <a href="{{ url_for('login') }}">Log in to see all your orders</a></p>
+  </div>
+</section>
+{% endblock %}
