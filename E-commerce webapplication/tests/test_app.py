@@ -178,6 +178,7 @@ class ShopAppTests(unittest.TestCase):
         homepage = self.client.get("/")
         self.assertEqual(homepage.status_code, 200)
         self.assertIn(b"Canvas Tote", homepage.data)
+        self.assertEqual(self.client.get("/health").json, {"status": "ok"})
         results = self.client.get("/products?q=canvas")
         self.assertEqual(results.status_code, 200)
         self.assertIn(b"Canvas Tote", results.data)
@@ -227,6 +228,10 @@ class ShopAppTests(unittest.TestCase):
         runner = app.test_cli_runner()
         first_run = runner.invoke(args=["init-db"])
         self.assertEqual(first_run.exit_code, 0, first_run.output)
+        with app.app_context():
+            bicycle = Product.query.filter_by(name="City Commuter Bicycle").one()
+            bicycle.price = Decimal("123.00")
+            db.session.commit()
         second_run = runner.invoke(args=["init-db"])
         self.assertEqual(second_run.exit_code, 0, second_run.output)
         with app.app_context():
@@ -237,7 +242,7 @@ class ShopAppTests(unittest.TestCase):
             })
             self.assertEqual(
                 Product.query.filter_by(name="City Commuter Bicycle").one().price,
-                Decimal("15999.00"),
+                Decimal("123.00"),
             )
             historical_item = OrderItem.query.filter_by(order_id=order_id).one()
             self.assertIsNone(historical_item.product_id)

@@ -24,6 +24,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = bool(os.environ.get("RENDER"))
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL") or (
     "mysql+pymysql://"
     f"{quote_plus(os.environ.get('MYSQL_USER', 'root'))}:"
@@ -173,6 +176,11 @@ def home():
         .all()
     )
     return render_template("index.html", featured=featured)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 
 @app.route("/products")
@@ -538,21 +546,23 @@ def init_db():
         )
         db.session.commit()
 
-    old_sample_names = (
-        "Everyday Backpack",
-        "Ceramic Coffee Set",
-        "Desk Lamp",
-        "Canvas Tote",
-    )
-    old_samples = Product.query.filter(Product.name.in_(old_sample_names)).all()
-    if old_samples:
-        old_sample_ids = [product.id for product in old_samples]
-        OrderItem.query.filter(OrderItem.product_id.in_(old_sample_ids)).update(
-            {OrderItem.product_id: None}, synchronize_session="fetch"
+    has_new_catalog = Product.query.filter_by(name="City Commuter Bicycle").first()
+    if not has_new_catalog:
+        old_sample_names = (
+            "Everyday Backpack",
+            "Ceramic Coffee Set",
+            "Desk Lamp",
+            "Canvas Tote",
         )
-        for product in old_samples:
-            db.session.delete(product)
-        db.session.flush()
+        old_samples = Product.query.filter(Product.name.in_(old_sample_names)).all()
+        if old_samples:
+            old_sample_ids = [product.id for product in old_samples]
+            OrderItem.query.filter(OrderItem.product_id.in_(old_sample_ids)).update(
+                {OrderItem.product_id: None}, synchronize_session="fetch"
+            )
+            for product in old_samples:
+                db.session.delete(product)
+            db.session.flush()
 
     sample_products = [
         {
@@ -632,9 +642,6 @@ def init_db():
         product = Product.query.filter_by(name=sample["name"]).first()
         if product is None:
             db.session.add(Product(**sample))
-        else:
-            for field, value in sample.items():
-                setattr(product, field, value)
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@shop.local").strip().lower()
     if User.query.filter_by(email=admin_email).first() is None:
         db.session.add(
@@ -648,7 +655,7 @@ def init_db():
             )
         )
     db.session.commit()
-    click.echo("Database initialized with sample products and the demo admin account.")
+    click.echo("Database initialized. Existing products and admin accounts were preserved.")
 
 
 if __name__ == "__main__":

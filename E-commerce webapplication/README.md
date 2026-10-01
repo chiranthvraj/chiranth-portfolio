@@ -46,6 +46,33 @@ The first `init-db` run creates eight sample products across the shop categories
 `init-db` to use your own values. Change the demo password before sharing or deploying.
 Set a stable, private `SECRET_KEY` before deployment.
 
+## Deploy the full app with GitHub and Render
+
+The app needs a Python web server and a reachable MySQL database; GitHub Pages
+cannot run Flask. This repository includes `render.yaml` for a Render web service.
+
+1. Make sure your hosted MySQL database is reachable from Render and create an
+   empty database for the shop. Copy its **public/external** connection details.
+2. In Render, choose **New → Blueprint**, connect
+   `chiranthvraj/chiranth-portfolio`, and select
+   `E-commerce webapplication/render.yaml` as the Blueprint file.
+3. Review and create the `little-shop` web service. In its environment settings,
+   set `DATABASE_URL` to your hosted MySQL URL using the PyMySQL driver, for example:
+   `mysql+pymysql://USER:PASSWORD@HOST:3306/ecommerce_db?charset=utf8mb4`.
+   Keep this URL private; do not add it to GitHub. If the database password has
+   URL-special characters, percent-encode them first.
+4. Deploy. The start command installs the schema and missing sample products, then
+   starts Gunicorn. Existing products and admin accounts are left unchanged on later
+   restarts. Render generates a private `SECRET_KEY` and initial `ADMIN_PASSWORD`;
+   find the generated admin password in the service's environment settings. The
+   default admin email is `admin@shop.local`.
+5. Open the service's `onrender.com` URL. The `/health` endpoint is configured for
+   Render health checks.
+
+The repository's `main` branch is connected to the service, so subsequent pushes
+can trigger automatic deployments. The free web-service plan may sleep when idle;
+the database remains hosted separately.
+
 ## Run the tests
 
 The focused route and workflow tests use an in-memory SQLite database, so MySQL does
@@ -74,6 +101,7 @@ admin product form.
 
 ```text
 app.py                  Flask routes, database models, and CLI setup
+render.yaml             Render web-service deployment configuration
 requirements.txt        Python dependencies
 database/schema.sql    MySQL database creation
 templates/              Jinja pages and shared layout
